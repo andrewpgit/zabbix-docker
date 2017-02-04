@@ -1,0 +1,68 @@
+version: '2'
+services:
+ nginx:
+   container_name: zabbix-nginx
+   image: nginx:zabbix
+   build:
+     context: ./Nginx
+   ports:
+     - "8080:80"
+   volumes:
+     - /data/logs/nginx:/var/log/nginx
+   volumes_from:
+     - php-fpm
+   depends_on:
+     - php-fpm
+  
+ php-fpm:
+   container_name: zabbix-php
+   image: php-fpm:zabbix
+   build:
+     context: ./Php-fpm 
+   expose:
+     - 9000
+   volumes:
+     - /usr/share/zabbix
+     - /data/logs/php-fpm:/var/log/php-fpm
+   depends_on:
+     - mysqldb
+   links: 
+     - zabbix:zabbix.local
+
+# webdata:
+#   container_name: zabbix-webdata
+#   image: debian:jessie
+#   volumes:
+#     - /data/www/zabbix:/var/www/html
+
+ mysqldb:
+   container_name: zabbix-db
+   image: mysql:zabbix
+   build:
+     context: ./Mysql
+   expose:
+     - 3306
+   volumes_from:
+     - data  
+
+ data:
+   container_name: data-db
+   image: centos:7
+   volumes:
+     - /data/db/zabbix:/var/lib/mysql
+
+
+ zabbix:
+   container_name: zabbix-server
+   hostname: zabbix.local
+   image: zabbix:server
+   build:
+     context: ./Zabbix
+   ports:
+     - "127.0.0.1:10051:10051"
+   depends_on:
+     - mysqldb
+   
+volumes:
+ # webdata:
+  data:
