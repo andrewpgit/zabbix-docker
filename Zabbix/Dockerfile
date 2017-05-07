@@ -19,7 +19,7 @@ RUN     apt-get update  &&  apt-get install -qy openssl locales curl tar gzip un
     &&  mkdir /tmp/zabbix \
     &&  wget -P /tmp/zabbix http://repo.zabbix.com/zabbix/3.2/debian/pool/main/z/zabbix-release/zabbix-release_3.2-1+jessie_all.deb \
     &&  dpkg -i  /tmp/zabbix/*.deb  &&  apt-get update \  
-    &&  apt-get install -qy  --no-install-recommends  zabbix-server-mysql \
+    &&  apt-get install -qy  --no-install-recommends  zabbix-server-mysql zabbix-get \
     &&  mv /etc/zabbix/zabbix_server.conf /etc/zabbix/zabbix_server.conf_old 
 
 ADD  zabbix_server.conf  /etc/zabbix/zabbix_server.conf
